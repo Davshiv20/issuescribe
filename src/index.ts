@@ -18,7 +18,11 @@ async function main(): Promise<void> {
     repository,
     octokit,
     githubRepo: { owner: config.github.owner, repo: config.github.repo },
-    llm: { apiKey: config.openai.apiKey, model: config.openai.model },
+    llm: {
+      apiKey: config.openai.apiKey,
+      model: config.openai.model,
+      baseUrl: config.openai.baseUrl,
+    },
   });
 
   await client.login(config.discord.botToken);

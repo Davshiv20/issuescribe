@@ -13,6 +13,7 @@ export type GeneratedDraft = {
 export type LlmConfig = {
   apiKey: string;
   model: string;
+  baseUrl?: string;
 };
 
 // All LLM-provider-specific code lives in this module. Swapping providers
@@ -27,7 +28,7 @@ export async function generateIssueDraft(
   });
 
   try {
-    const client = new OpenAI({ apiKey: llm.apiKey });
+    const client = new OpenAI({ apiKey: llm.apiKey, baseURL: llm.baseUrl });
     const response = await client.chat.completions.create({
       model: llm.model,
       response_format: { type: "json_object" },

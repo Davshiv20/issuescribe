@@ -13,6 +13,8 @@ const envSchema = z.object({
   GITHUB_OWNER: z.string().min(1, "GITHUB_OWNER is required"),
   GITHUB_REPO: z.string().min(1, "GITHUB_REPO is required"),
   OPENAI_API_KEY: z.string().min(1, "OPENAI_API_KEY is required"),
+  // Empty string (unset in .env) means "use the provider default".
+  OPENAI_BASE_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),
   OPENAI_MODEL: z.string().min(1).default("gpt-4o-mini"),
   DATABASE_URL: z.string().min(1).default("file:./issuescribe.db"),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
@@ -32,6 +34,7 @@ export type Config = {
   openai: {
     apiKey: string;
     model: string;
+    baseUrl?: string;
   };
   databasePath: string;
   nodeEnv: "development" | "production" | "test";
@@ -65,6 +68,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     openai: {
       apiKey: raw.OPENAI_API_KEY,
       model: raw.OPENAI_MODEL,
+      baseUrl: raw.OPENAI_BASE_URL,
     },
     databasePath: databaseUrlToPath(raw.DATABASE_URL),
     nodeEnv: raw.NODE_ENV,
